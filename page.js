@@ -1,13 +1,20 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const cheerio = require('cheerio')
+const os = require("os")
+
+console.log(os.platform());
+
+function isLinux(){
+  return os.platform()==="linux";
+}
 
 async function getPageContent(url) {
   console.time("1")
   console.time("2")
   const browser = await puppeteer.launch({
     args: [
-      `--proxy-server=127.0.0.1:10809`,
+      isLinux() ? "" : `--proxy-server=127.0.0.1:10809`,
       `--disable-javascript=true`,
       `--disable-images=true`
     ]
