@@ -5,8 +5,8 @@ const os = require("os")
 
 console.log(os.platform());
 
-function isLinux(){
-  return os.platform()==="linux";
+function isLinux() {
+  return os.platform() === "linux";
 }
 
 async function getPageContent(url) {
@@ -15,6 +15,7 @@ async function getPageContent(url) {
   const browser = await puppeteer.launch({
     args: [
       isLinux() ? "" : `--proxy-server=127.0.0.1:10809`,
+      '--no-sandbox', '--disable-setuid-sandbox',
       `--disable-javascript=true`,
       `--disable-images=true`
     ]
