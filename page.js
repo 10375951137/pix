@@ -13,11 +13,13 @@ async function getPageContent(url) {
   console.time("1")
   console.time("2")
   const browser = await puppeteer.launch({
+    ignoreHTTPSErrors:true,
     args: [
       isLinux() ? "" : `--proxy-server=127.0.0.1:10809`,
       '--no-sandbox', '--disable-setuid-sandbox',
       `--disable-javascript=true`,
-      `--disable-images=true`
+      `--disable-images=true`,
+      "-–ash-host-window-bounds=240x320"
     ]
   });
   // console.log(browser);
