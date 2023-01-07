@@ -66,13 +66,13 @@ getPageContent("https://18comic.vip/albums?o=mv&t=t").then((content) => {
         return $(v).text();
       })
       .toArray();
-    console.log({
-      title,
-      img,
-      id,
-      likes,
-      tags,
-    });
+    // console.log({
+    //   title,
+    //   img,
+    //   id,
+    //   likes,
+    //   tags,
+    // });
   });
   console.timeEnd("2");
 });
