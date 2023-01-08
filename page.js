@@ -48,7 +48,7 @@ async function getPageContent(url) {
   if (!browser) {
     browser = await puppeteer.launch({
       ignoreHTTPSErrors: true,
-      headless: false,
+      // headless: false,
       args: [
         isLinux() ? "" : `--proxy-server=127.0.0.1:10809`,
         "--no-sandbox",
