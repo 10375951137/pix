@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
 });
 connection.connect();
 
-console.log(os.platform());
+let reTry = 0;
 
 function isLinux() {
   return os.platform() === "linux";
@@ -43,6 +43,48 @@ async function getPageContent(url) {
   // await browser.close();
   return content;
 }
+const getComicList = async () => {
+  try {
+    const content = await getPageContent("https://18comic.vip/albums?o=mv&t=t");
+    console.timeEnd("1");
+    const $ = cheerio.load(content);
+    let sql = [];
+    $(".thumb-overlay-albums").each(function (i, ele) {
+      const parent = $(ele).parent();
+      const titleEle = $(parent.find(".video-title")[0]);
+      let title = titleEle.text();
+      if (title) {
+        //特殊字符处理
+        title = title.replaceAll("'", "\"");
+        title = title.replaceAll("+", "加");
+
+      }
+      let id = $($(ele).find("a")[0]).attr("href").split("/").filter((_) => _).pop();
+      let img = $($(ele).find("a img")[0])
+        .attr("src")
+        .replaceAll("blank.jpg", `${id}_3x4.jpg?v=${Date.now()}`);
+      let likes = $($(ele).find(`#albim_likes_${id}`)[0]).text();
+      let tags = $($(parent).find(".tag"))
+        .map((j, v) => {
+          return $(v).text();
+        })
+        .toArray().join(",");
+
+      sql.push([id, title, img, likes, tags, new Date()]);
+    });
+    //如果id已存在则不插入,则忽略
+    connection.query("INSERT IGNORE INTO list (id,title,img,likes,tags,date) VALUES ?", [sql], () => { });
+
+    console.timeEnd("2");
+  } catch (error) {
+    console.log("出错了，第" + (reTry + 1) + "次重试");
+    if (reTry < 3) {
+      reTry++;
+      await getComicList();
+    }
+  }
+
+};
 
 (async () => {
   if (!browser) {
@@ -59,33 +101,14 @@ async function getPageContent(url) {
       ],
     });
   }
-  await getPageContent("https://18comic.vip/albums?o=mv&t=t").then(
-    (content) => {
-      console.timeEnd("1");
-      const $ = cheerio.load(content);
-      $(".thumb-overlay-albums").each(function (i, ele) {
-        const parent = $(ele).parent();
-        const titleEle = $(parent.find(".video-title")[0]);
-        let title = titleEle.text();
-        let id = $($(ele).find("a")[0]).attr("href").split("/").filter((_) => _).pop();
-        let img = $($(ele).find("a img")[0])
-          .attr("src")
-          .replaceAll("blank.jpg", `${id}_3x4.jpg?v=${Date.now()}`);
-        let likes = $($(ele).find(`#albim_likes_${id}`)[0]).text();
-        let tags = $($(parent).find(".tag"))
-          .map((j, v) => {
-            return $(v).text();
-          })
-          .toArray().join(",");
-        connection.query(`insert into list (id,title,img,likes,tags,date) values (${id},'${title}','${img}',${likes},'${tags}',now())`, function (error, results, fields) {
-          if (error) throw error;
-          console.log(results);
-        });
 
-      });
-      console.timeEnd("2");
-    }
-  );
+  await getComicList();
+  console.log("爬取完毕");
 
   await browser.close();
+  browser = null;
+  //关闭connection
+  connection.end();
+  //退出进程
+  process.exit(0);
 })();
