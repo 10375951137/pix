@@ -77,8 +77,8 @@ async function resize() {
     const newImage = new Jimp(width, height);
     let heightSum = 0;
     for (let i = 0; i < images.length; i++) {
-        heightSum += images[i].bitmap.height;
         newImage.composite(images[i], 0, heightSum);
+        heightSum += images[i].bitmap.height;
     }
     // 保存
     await newImage.writeAsync(`./${Date.now()}_new.jpg`);
