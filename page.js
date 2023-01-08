@@ -48,7 +48,7 @@ async function getPageContent(url) {
   if (!browser) {
     browser = await puppeteer.launch({
       ignoreHTTPSErrors: true,
-      headless: false,
+      // headless: false,
       args: [
         isLinux() ? "" : `--proxy-server=127.0.0.1:10809`,
         "--no-sandbox",
@@ -77,7 +77,7 @@ async function getPageContent(url) {
             return $(v).text();
           })
           .toArray().join(",");
-        connection.query(`insert into comic (id,title,img,likes,tags,date) values (${id},'${title}','${img}',${likes},'${tags}',now())`, function (error, results, fields) {
+        connection.query(`insert into list (id,title,img,likes,tags,date) values (${id},'${title}','${img}',${likes},'${tags}',now())`, function (error, results, fields) {
           if (error) throw error;
           console.log(results);
         });
@@ -87,9 +87,5 @@ async function getPageContent(url) {
     }
   );
 
-  await getPageContent("https://18comic.vip/albums?o=mv&t=t").then((content) => {
-    console.timeEnd("1");
-    console.timeEnd("2");
-  });
   await browser.close();
 })();
