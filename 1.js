@@ -10,7 +10,8 @@ wss.on('connection', function (ws) {
     console.log('有客户端连接');
     //监听客户端的消息
     ws.on('message', function incoming(message) {
-        console.log('received: %s', message);
+        console.log('接收到信息: %s', message);
+        getData(ws, message)
     });
     //向客户端发送消息
     ws.send('something');
