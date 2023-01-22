@@ -14,7 +14,7 @@ wss.on('connection', function (ws) {
         getData(ws, message)
     });
     //向客户端发送消息
-    ws.send('something');
+    ws.send(JSON.stringify({ code: 1, msg: "连接成功", type: "success" }));
 });
 
 wss.on("error", (err) => {
@@ -29,7 +29,7 @@ function substring(data, startStr, endStr) {
 
 function getData(ws, url) {
 
-    if (url.indexOf("www.ikandy.fun") == -1) {
+    if (url.indexOf("ikandy.fun") == -1) {
         ws.send(JSON.stringify({ code: 0, msg: "不支持的网站", type: "error" }));
         return;
     }
