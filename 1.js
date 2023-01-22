@@ -30,12 +30,12 @@ function substring(data, startStr, endStr) {
 function getData(ws, url) {
 
     if (url.indexOf("www.ikandy.fun") == -1) {
-        ws.send({ code: 0, msg: "不支持的网站", type: "error" });
+        ws.send(JSON.stringify({ code: 0, msg: "不支持的网站", type: "error" }));
         return;
     }
 
     axios.get(url).then(({ data }) => {
-        ws.send({ code: 1, msg: "获取网站页面成功", type: "percent", data: 20 });
+        ws.send(JSON.stringify({ code: 1, msg: "获取网站页面成功", type: "percent", data: 20 }));
         //截取字符串 var player_data=到</script>
         let player_data = JSON.parse(substring(data, "var player_data=", "</script>"))
         axios({
@@ -46,7 +46,7 @@ function getData(ws, url) {
                 "user-agent": "Mozilla/5.0 (Linux; Android 10; MI 9 Build/QKQ1.190825.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/83.0.4103.106 Mobile Safari/537.36"
             }
         }).then(({ data }) => {
-            ws.send({ code: 1, msg: "获取iframe页面成功", type: "percent", data: 40 });
+            ws.send(JSON.stringify({ code: 1, msg: "获取iframe页面成功", type: "percent", data: 40 }));
             let $ = cheerio.load(data)
             let url = $("#player").attr("src")
             axios({
@@ -57,7 +57,7 @@ function getData(ws, url) {
                     "user-agent": "Mozilla/5.0 (Linux; Android 10; MI 9 Build/QKQ1.190825.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/83.0.4103.106 Mobile Safari/537.36"
                 }
             }).then(({ data }) => {
-                ws.send({ code: 1, msg: "获取参数页面成功", type: "percent", data: 60 });
+                ws.send(JSON.stringify({ code: 1, msg: "获取参数页面成功", type: "percent", data: 60 }));
                 let id = substring(data, `var id="`, `";`);
                 let sk = substring(data, `var sk="`, `";`);
                 let pt = substring(data, `var pt="`, `";`);
@@ -79,7 +79,7 @@ function getData(ws, url) {
                         'time': ti
                     }
                 }).then(res => {
-                    ws.send({ code: 1, msg: "获取数据成功", type: "data", data: decrypt(res.data) });
+                    ws.send(JSON.stringify({ code: 1, msg: "获取数据成功", type: "data", data: decrypt(res.data) }));
                 })
             })
         })
