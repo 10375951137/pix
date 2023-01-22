@@ -68,8 +68,13 @@
     "@dcloudio/uni-stacktracey": "^2.0.2-3061520221228001",
     "@dcloudio/uni-stat": "^2.0.2-3061520221228001",
     "@vue/shared": "^3.0.0",
+    "cheerio": "^1.0.0-rc.12",
     "core-js": "^3.8.3",
+    "element-ui": "^2.15.12",
     "flyio": "^0.6.2",
+    "less": "^4.1.3",
+    "less-loader": "^11.1.0",
+    "uview-ui": "^2.0.31",
     "vue": ">= 2.6.14 < 2.7",
     "vuex": "^3.2.0"
   },
@@ -94,6 +99,8 @@
     "mini-types": "*",
     "miniprogram-api-typings": "*",
     "postcss-comment": "^2.0.0",
+    "sass": "^1.57.1",
+    "sass-loader": "^10.4.1",
     "vue-template-compiler": ">= 2.6.14 < 2.7"
   },
   "browserslist": [
