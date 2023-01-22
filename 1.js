@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 //引入ws模块
 const WebSocket = require('ws');
 //创建websocket服务器
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 18080 });
 //监听客户端的连接
 wss.on('connection', function (ws) {
     console.log('有客户端连接');
@@ -16,6 +16,9 @@ wss.on('connection', function (ws) {
     ws.send('something');
 });
 
+wss.on("error", (err) => {
+    console.log("err", err)
+})
 
 function substring(data, startStr, endStr) {
     let start = data.indexOf(startStr) + startStr.length;
