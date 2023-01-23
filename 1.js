@@ -11,7 +11,11 @@ wss.on('connection', function (ws) {
     //监听客户端的消息
     ws.on('message', function incoming(message) {
         console.log('接收到信息: %s', message);
-        getData(ws, message)
+        if (message === "recommend") {
+            getRecommend(ws)
+        } else {
+            getData(ws, message)
+        }
     });
     //向客户端发送消息
     ws.send(JSON.stringify({ code: 1, msg: "连接成功", type: "success" }));
@@ -83,6 +87,28 @@ function getData(ws, url) {
                 })
             })
         })
+    })
+}
+
+//获取推荐
+function getRecommend(ws) {
+    axios.get("https://www.ikandy.fun/").then(({ data }) => {
+        const $ = cheerio.load(data)
+        let recommend = [];
+        $($(".stui-pannel_bd")[0]).find(".stui-vodlist__box").each((index, item) => {
+            const thumbDiv = $(item).find(".stui-vodlist__thumb");
+            const thumb = thumbDiv.attr("data-original");
+            const title = thumbDiv.attr("title");
+            const href = thumbDiv.attr("href");
+            const pic_text = thumbDiv.find(".pic-text").text();
+            recommend.push({
+                thumb,
+                title,
+                href,
+                pic_text
+            })
+        })
+        ws.send(JSON.stringify({ code: 1, msg: "获取推荐成功", type: "recommend", data: recommend }));
     })
 }
 
