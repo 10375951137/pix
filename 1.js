@@ -11,6 +11,7 @@ wss.on('connection', function (ws) {
     //监听客户端的消息
     ws.on('message', function incoming(message) {
         console.log('接收到信息: %s', message);
+        console.log(message);
         if (message === "recommend") {
             getRecommend(ws)
         } else {
